@@ -30,7 +30,6 @@ export default async function DashboardPage() {
               <th className="p-3">Phone</th>
               <th className="p-3">Message</th>
               <th className="p-3">Source</th>
-              <td className="p-3">{lead.source_page || '-'}</td>
               <th className="p-3">Status</th>
               <th className="p-3">Time</th>
             </tr>
@@ -42,7 +41,7 @@ export default async function DashboardPage() {
                 <td className="p-3">{lead.name}</td>
                 <td className="p-3">{lead.phone}</td>
                 <td className="p-3">{lead.message}</td>
-
+                <td className="p-3">{lead.source_page || '-'}</td>
                 <td className="p-3">
                   <form
   action={async (formData) => {
