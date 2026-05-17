@@ -43,26 +43,35 @@ export default async function DashboardPage() {
 
                 <td className="p-3">
                   <form
-                    action={async (formData) => {
-                      'use server'
-                      const status = formData.get('status') as string
-                      await supabase
-                        .from('leads')
-                        .update({ status })
-                        .eq('id', lead.id)
-                    }}
-                  >
-                    <select
-                      name="status"
-                      defaultValue={lead.status || 'new'}
-                      className="border p-1"
-                      onChange={(e) => e.currentTarget.form?.requestSubmit()}
-                    >
-                      <option value="new">New</option>
-                      <option value="contacted">Contacted</option>
-                      <option value="closed">Closed</option>
-                    </select>
-                  </form>
+  action={async (formData) => {
+    'use server'
+
+    const status = formData.get('status') as string
+
+    await supabase
+      .from('leads')
+      .update({ status })
+      .eq('id', lead.id)
+  }}
+  className="flex gap-2 items-center"
+>
+  <select
+    name="status"
+    defaultValue={lead.status || 'new'}
+    className="border p-1"
+  >
+    <option value="new">New</option>
+    <option value="contacted">Contacted</option>
+    <option value="closed">Closed</option>
+  </select>
+
+  <button
+    type="submit"
+    className="border px-2 py-1 text-sm"
+  >
+    Save
+  </button>
+</form>
                 </td>
 
                 <td className="p-3">
