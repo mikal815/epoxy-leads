@@ -29,6 +29,8 @@ export default async function DashboardPage() {
               <th className="p-3">Name</th>
               <th className="p-3">Phone</th>
               <th className="p-3">Message</th>
+              <th className="p-3">Source</th>
+              <td className="p-3">{lead.source_page || '-'}</td>
               <th className="p-3">Status</th>
               <th className="p-3">Time</th>
             </tr>
