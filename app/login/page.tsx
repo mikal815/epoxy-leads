@@ -7,9 +7,14 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const router = useRouter()
 
-  const handleLogin = () => {
-    if (password === process.env.NEXT_PUBLIC_DASHBOARD_PASSWORD) {
-      document.cookie = `dash_auth=${password}; path=/`
+  const handleLogin = async () => {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password }),
+    })
+
+    if (res.ok) {
       router.push('/dashboard')
     } else {
       alert('Wrong password')
