@@ -2,86 +2,93 @@
 
 import { useState } from 'react'
 
-export default function ContactForm() {
+export default function LeadForm() {
+  const [name, setName] = useState('')
+  const [phone, setPhone] = useState('')
+  const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-  e.preventDefault()
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
 
-  const form = e.currentTarget
+    setLoading(true)
 
-  setLoading(true)
+    try {
+      const res = await fetch('/api/lead', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          phone,
+          message,
+          source_page: window.location.pathname,
+        }),
+      })
 
-  const formData = new FormData(form)
+      if (!res.ok) {
+        throw new Error('Submission failed')
+      }
 
-  const payload = {
-    name: formData.get('name'),
-    phone: formData.get('phone'),
-    message: formData.get('message'),
-  }
-
-  try {
-    const res = await fetch('/api/lead', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    })
-
-    if (res.ok) {
       setSuccess(true)
-      form.reset()
-    }
-  } catch (error) {
-    console.error(error)
-  }
 
-  setLoading(false)
-}
+      setName('')
+      setPhone('')
+      setMessage('')
+    } catch (err) {
+      console.error(err)
+      alert('Something went wrong')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
-    <div className="rounded-2xl border p-6 shadow-sm bg-white">
-      <h2 className="mb-4 text-2xl font-bold">
-        Get a Free Estimate
-      </h2>
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 max-w-lg"
+    >
+      <input
+        type="text"
+        placeholder="Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        className="border p-3 w-full"
+        required
+      />
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          name="name"
-          placeholder="Name"
-          required
-          className="w-full rounded-lg border p-3"
-        />
+      <input
+        type="tel"
+        placeholder="Phone"
+        value={phone}
+        onChange={(e) => setPhone(e.target.value)}
+        className="border p-3 w-full"
+        required
+      />
 
-        <input
-          name="phone"
-          placeholder="Phone"
-          required
-          className="w-full rounded-lg border p-3"
-        />
+      <textarea
+        placeholder="Tell us about your project"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        className="border p-3 w-full"
+        rows={5}
+      />
 
-        <textarea
-          name="message"
-          placeholder="Tell us about your project"
-          className="w-full rounded-lg border p-3"
-        />
+      <button
+        type="submit"
+        disabled={loading}
+        className="bg-black text-white px-6 py-3"
+      >
+        {loading ? 'Submitting...' : 'Get Free Estimate'}
+      </button>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-lg bg-black p-3 text-white"
-        >
-          {loading ? 'Submitting...' : 'Request Estimate'}
-        </button>
-
-        {success && (
-          <p className="text-sm text-green-600">
-            Your request was submitted successfully.
-          </p>
-        )}
-      </form>
-    </div>
+      {success && (
+        <p className="text-green-600 font-medium">
+          Submitted successfully.
+        </p>
+      )}
+    </form>
   )
 }

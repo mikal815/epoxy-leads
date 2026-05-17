@@ -4,13 +4,14 @@ import { twilio } from '@/lib/twilio'
 
 export async function POST(req: Request) {
   try {
-    const { name, phone, message } = await req.json()
+    const { name, phone, message, source_page } = await req.json()
 
     // 1. Save to Supabase
     await supabase.from('leads').insert({
       name,
       phone,
       message,
+      source_page,
     })
 
     // 2. Send SMS alert
